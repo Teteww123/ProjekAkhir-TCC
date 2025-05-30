@@ -1,7 +1,14 @@
 import React from 'react';
+import { useAuth } from '../features/auth/context';
 
 const HomePage = () => {
-  return <div>Welcome to the Movie App</div>;
+  const { logout, isAuthenticated } = useAuth();
+  return (
+    <div>
+      <h1>Welcome to the Movie App</h1>
+      {isAuthenticated && <button onClick={logout}>Logout</button>}
+    </div>
+  );
 };
 
 export default HomePage;
