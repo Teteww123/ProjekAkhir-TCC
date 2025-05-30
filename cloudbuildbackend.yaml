@@ -7,7 +7,7 @@ steps:
     args: [
       'run', 'deploy', 'projectakhir-backend',
       '--image', 'gcr.io/$PROJECT_ID/projectakhir-backend',
-      '--region', 'asia-southeast2', # ganti region sesuai lokasi Cloud SQL/bucket
+      '--region', 'us-central1', # ganti region sesuai lokasi Cloud SQL/bucket
       '--platform', 'managed',
       '--allow-unauthenticated',
       '--add-cloudsql-instances', 'YOUR_INSTANCE_CONNECTION_NAME',
