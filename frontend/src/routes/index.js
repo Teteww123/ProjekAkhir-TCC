@@ -4,7 +4,7 @@ import HomePage from '../pages/HomePage';
 import LoginPage from '../pages/LoginPage';
 import RegisterPage from '../pages/RegisterPage';
 import MovieDetailPage from '../pages/MovieDetailPage';
-import { useAuth } from '../features/auth/context';
+import { useAuth } from '../features/auth/AuthContext';
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
