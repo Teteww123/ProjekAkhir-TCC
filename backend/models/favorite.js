@@ -1,16 +1,25 @@
 const { DataTypes } = require('sequelize');
-const { sequelize } = require('../config/database');
-const User = require('./user');
+const sequelize = require('../config/database');
 const Movie = require('./movie');
 
 const Favorite = sequelize.define('Favorite', {
-  note: DataTypes.STRING,
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
+  },
+  notes: DataTypes.TEXT,
+  movieId: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: Movie,
+      key: 'id'
+    },
+    allowNull: false
+  }
 });
 
-User.hasMany(Favorite);
-Favorite.belongsTo(User);
-
-Movie.hasMany(Favorite);
-Favorite.belongsTo(Movie);
+// Relasi
+Favorite.belongsTo(Movie, { foreignKey: 'movieId' });
 
 module.exports = Favorite;

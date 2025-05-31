@@ -1,22 +1,33 @@
 const express = require('express');
-const dotenv = require('dotenv');
-const userRoutes = require('./routes/user');
-
-dotenv.config();
-
 const app = express();
+const sequelize = require('./config/database');
+
+// Pastikan semua model di-load di sini!
+require('./models/user');
+require('./models/movie');
+require('./models/favorite');
+
+const userRoutes = require('./routes/user');
+const movieRoutes = require('./routes/movie');
+const favoriteRoutes = require('./routes/favorite');
+
 app.use(express.json());
 
-app.use('/user', userRoutes)
-
-// Import routes
-// const authRoutes = require('./routes/auth');
-// app.use('/api/auth', authRoutes);
-// Tambah routes lain sesuai struktur projectmu
-
 app.get('/', (req, res) => {
-  res.send('Backend running!');
+  res.send('API is running!');
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log('Server berjalan di http://localhost:' + PORT));
+app.use('/user', userRoutes);
+app.use('/movie', movieRoutes);
+app.use('/favorite', favoriteRoutes);
+
+sequelize.sync({ alter: true })
+  .then(() => {
+    console.log('Database & tables created!');
+    app.listen(process.env.PORT || 5000, () => {
+      console.log('Server is running...');
+    });
+  })
+  .catch(err => {
+    console.error('Unable to sync database:', err);
+  });

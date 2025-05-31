@@ -28,7 +28,7 @@ exports.login = async (req, res) => {
     const match = await bcrypt.compare(password, user.password);
     if (!match) return res.status(401).json({ message: 'Password salah.' });
 
-    const token = jwt.sign({ userId: user.id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ userId: user.id, username: user.username }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
 
     res.json({ message: 'Login berhasil.', token });
   } catch (err) {
@@ -41,6 +41,48 @@ exports.profile = async (req, res) => {
     const user = await User.findByPk(req.user.userId, { attributes: ['id', 'username'] });
     if (!user) return res.status(404).json({ message: 'User tidak ditemukan.' });
     res.json(user);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
+exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await User.findAll({ attributes: ['id', 'username'] });
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// Update user
+exports.updateUser = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { username, password } = req.body;
+    const user = await User.findByPk(id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    user.username = username || user.username;
+    user.password = password || user.password;
+    await user.save();
+
+    res.json({ message: "User updated", user });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// Delete user
+exports.deleteUser = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const user = await User.findByPk(id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    await user.destroy();
+    res.json({ message: "User deleted" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
