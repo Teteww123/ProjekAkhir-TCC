@@ -5,28 +5,27 @@ import useAuth from "../auth/UseAuth";
 const LoginPage = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [pass, setPass] = useState("");
   const [error, setError] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setError("Masukkan email yang valid !");
+    if (!username) {
+      setError("Username tidak boleh kosong !");
       return;
     }
     try {
-      const result = await login(email, pass);
+      const result = await login(username, pass);
       if (result) {
-        if (email === "admin@gmail.com") {
+        if (username === "admin") {
           navigate("/admin-dashboard");
         } else {
-          navigate("/dashboard", { state: { email: email } });
+          navigate("/dashboard", { state: { username } });
         }
       } else {
-        setError("Email atau Password Salah !");
+        setError("Username atau Password Salah !");
       }
     } catch (error) {
       console.error("Login Error:", error);
@@ -68,26 +67,28 @@ const LoginPage = () => {
         }}
       >
         <h2 className="title has-text-white has-text-centered mb-6">Log In</h2>
-        <input
-          className="input mb-3"
-          type="text"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          className="input mb-4"
-          type="password"
-          placeholder="Password"
-          value={pass}
-          onChange={(e) => setPass(e.target.value)}
-        />
-        <button
-          className="button is-primary is-fullwidth mb-3"
-          onClick={handleLogin}
-        >
-          Login
-        </button>
+        <form onSubmit={handleLogin}>
+          <input
+            className="input mb-3"
+            type="text"
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <input
+            className="input mb-4"
+            type="password"
+            placeholder="Password"
+            value={pass}
+            onChange={(e) => setPass(e.target.value)}
+          />
+          <button
+            className="button is-primary is-fullwidth mb-3"
+            type="submit"
+          >
+            Login
+          </button>
+        </form>
         {error && <p className="has-text-danger has-text-centered">{error}</p>}
         <p className="has-text-centered mt-4">
           Belum Punya Akun?{" "}

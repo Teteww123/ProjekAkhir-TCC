@@ -1,56 +1,44 @@
 import { useEffect, useState } from "react";
 import useAuth from "../auth/UseAuth.js";
 import axios from "../api/AxiosInstance.js";
-import { BASE_URL } from "../utils/utils.js";
+import { BASE_URL } from "../utils/Utils.js";
 import { useNavigate } from "react-router-dom";
 import { FaSignOutAlt, FaUserCircle } from "react-icons/fa";
 
 function ProfilePage() {
   const { accessToken, logout } = useAuth();
-  const [email, setEmail] = useState("");
-  const [userName, setUserName] = useState("");
-  const [tiketList, setTiketList] = useState([]);
-  const [konserMap, setKonserMap] = useState({});
+  const [user, setUser] = useState(null);
+  const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  // Fetch user profile
   const fetchProfile = async () => {
     try {
-      const emailLocal = localStorage.getItem("email");
-      const userNameLocal = localStorage.getItem("userName");
-      setEmail(emailLocal || "");
-      setUserName(userNameLocal || "");
-      if (!emailLocal || userName) return;
-
-      const res = await axios.get(`${BASE_URL}/pengunjung/${emailLocal}`, {
+      // Ambil data user (asumsi backend mengembalikan user yang sedang login)
+      const resUser = await axios.get(`${BASE_URL}/user`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
+      setUser(resUser.data.data || null);
 
-      const tiketArray = (res.data.data || []).map(
-        (pengunjung) => pengunjung.tiket
-      );
-      setTiketList(tiketArray);
-
-      const konserRes = await axios.get(`${BASE_URL}/konser`, {
+      // Ambil data favorite
+      const resFav = await axios.get(`${BASE_URL}/favorite`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
-      const map = {};
-      (konserRes.data.data || []).forEach((k) => {
-        map[k.nama] = k;
-      });
-      setKonserMap(map);
+      setFavorites(resFav.data.data || []);
     } catch (error) {
-      console.error(error);
-      setTiketList([]);
-      setKonserMap({});
+      setUser(null);
+      setFavorites([]);
     } finally {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     if (accessToken) {
       fetchProfile();
     }
+    // eslint-disable-next-line
   }, [accessToken]);
 
   const handleLogout = async () => {
@@ -153,22 +141,21 @@ function ProfilePage() {
             <FaUserCircle size={100} color="white" />
           </div>
           <div style={{ fontSize: "1.5rem" }}>
-            {userName || (
+            {user?.username || (
               <span style={{ color: "#999" }}>(tidak ditemukan)</span>
             )}
           </div>
-
           <div style={{ marginBottom: "1rem", fontSize: "1rem" }}>
-            {email || <span style={{ color: "#999" }}>(tidak ditemukan)</span>}
+            User ID: {user?.id || "-"}
           </div>
 
           <div>
             <h3 style={{ fontWeight: "600", marginBottom: "0.5rem" }}>
-              Tiket yang Dimiliki:
+              Movie Favorite:
             </h3>
             {loading ? (
               <p style={{ color: "#bbb" }}>Loading...</p>
-            ) : tiketList.length > 0 ? (
+            ) : favorites.length > 0 ? (
               <ul
                 style={{
                   listStyleType: "disc",
@@ -176,44 +163,29 @@ function ProfilePage() {
                   textAlign: "left",
                 }}
               >
-                {tiketList.map((tiket, idx) => {
-                  const konser = konserMap[tiket] || {};
-                  return (
-                    <li
-                      key={idx}
-                      style={{
-                        marginBottom: "1rem",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "1rem",
-                      }}
-                    >
-                      {konser.poster && (
-                        <img
-                          src={konser.poster}
-                          alt={konser.nama}
-                          style={{
-                            width: 60,
-                            height: 60,
-                            objectFit: "cover",
-                            borderRadius: "8px",
-                          }}
-                        />
-                      )}
-                      <div>
-                        <div style={{ fontWeight: "600" }}>
-                          {konser.nama || tiket}
-                        </div>
-                        <div style={{ color: "#ccc", fontSize: "0.9rem" }}>
-                          {konser.tanggal || "-"}
-                        </div>
+                {favorites.map((fav, idx) => (
+                  <li
+                    key={idx}
+                    style={{
+                      marginBottom: "1rem",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "1rem",
+                    }}
+                  >
+                    <div>
+                      <div style={{ fontWeight: "600" }}>
+                        {fav.movie?.title || `Movie ID: ${fav.movieId}`}
                       </div>
-                    </li>
-                  );
-                })}
+                      <div style={{ color: "#ccc", fontSize: "0.9rem" }}>
+                        {fav.notes || "-"}
+                      </div>
+                    </div>
+                  </li>
+                ))}
               </ul>
             ) : (
-              <p style={{ color: "#bbb" }}>Belum ada tiket yang dimiliki</p>
+              <p style={{ color: "#bbb" }}>Belum ada movie favorite</p>
             )}
           </div>
         </div>

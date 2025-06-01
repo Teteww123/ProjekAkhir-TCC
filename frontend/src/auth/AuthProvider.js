@@ -2,7 +2,7 @@ import { createContext, useContext, useState } from "react";
 import Cookies from "js-cookie";
 import axios from "../api/AxiosInstance.js";
 import PropTypes from "prop-types";
-import { BASE_URL } from "../utils/utils.js";
+import { BASE_URL } from "../utils/Utils.js";
 
 const AuthContext = createContext();
 
