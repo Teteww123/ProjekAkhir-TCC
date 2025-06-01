@@ -6,7 +6,7 @@ POST http://localhost:5000/user/register
 Content-Type: application/json
 
 {
-  "username": "contoh7",
+  "username": "contoh8",
   "password": "rahasia"
 }
 
@@ -18,7 +18,7 @@ POST http://localhost:5000/user/login
 Content-Type: application/json
 
 {
-  "username": "contoh7",
+  "username": "contoh8",
   "password": "rahasia"
 }
 
@@ -36,16 +36,16 @@ DELETE http://localhost:5000/user/1
 
 ### Get semua movie
 GET http://localhost:5000/movie
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsInVzZXJuYW1lIjoiY29udG9oMSIsImlhdCI6MTc0ODcwMzI3NywiZXhwIjoxNzQ4NzA2ODc3fQ.p1rsY69lVNx7oJKFILiiUYp3DPTGP3bEo_EvfU2ZvlA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsInVzZXJuYW1lIjoiY29udG9oOCIsImlhdCI6MTc0ODc4NTU5NiwiZXhwIjoxNzQ4Nzg5MTk2fQ.vdkjorzmtLQukNdtLV6druXQBDshtOe0vsF0DES8Kdk
 
 ### Get detail movie by id
 GET http://localhost:5000/movie/1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsInVzZXJuYW1lIjoiY29udG9oMSIsImlhdCI6MTc0ODcwMzI3NywiZXhwIjoxNzQ4NzA2ODc3fQ.p1rsY69lVNx7oJKFILiiUYp3DPTGP3bEo_EvfU2ZvlA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsInVzZXJuYW1lIjoiY29udG9oOCIsImlhdCI6MTc0ODc4NTU5NiwiZXhwIjoxNzQ4Nzg5MTk2fQ.vdkjorzmtLQukNdtLV6druXQBDshtOe0vsF0DES8Kdk
 
 ### Tambah movie baru
 POST http://localhost:5000/movie
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsInVzZXJuYW1lIjoiY29udG9oMSIsImlhdCI6MTc0ODcwMzI3NywiZXhwIjoxNzQ4NzA2ODc3fQ.p1rsY69lVNx7oJKFILiiUYp3DPTGP3bEo_EvfU2ZvlA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsInVzZXJuYW1lIjoiY29udG9oOCIsImlhdCI6MTc0ODc4NTU5NiwiZXhwIjoxNzQ4Nzg5MTk2fQ.vdkjorzmtLQukNdtLV6druXQBDshtOe0vsF0DES8Kdk
 
 {
   "title": "KIKO12",
@@ -58,7 +58,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsInVzZ
 ### Update movie (edit, misal id=1)
 PUT http://localhost:5000/movie/7
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsInVzZXJuYW1lIjoiY29udG9oMSIsImlhdCI6MTc0ODcwMzI3NywiZXhwIjoxNzQ4NzA2ODc3fQ.p1rsY69lVNx7oJKFILiiUYp3DPTGP3bEo_EvfU2ZvlA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsInVzZXJuYW1lIjoiY29udG9oOCIsImlhdCI6MTc0ODc4NTU5NiwiZXhwIjoxNzQ4Nzg5MTk2fQ.vdkjorzmtLQukNdtLV6druXQBDshtOe0vsF0DES8Kdk
 
 {
   "title": "Inception (Updated)",
@@ -71,17 +71,17 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsInVzZ
 ### Hapus movie (misal id=1)
 DELETE http://localhost:5000/movie/1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsInVzZXJuYW1lIjoiY29udG9oMSIsImlhdCI6MTc0ODcwMzI3NywiZXhwIjoxNzQ4NzA2ODc3fQ.p1rsY69lVNx7oJKFILiiUYp3DPTGP3bEo_EvfU2ZvlA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsInVzZXJuYW1lIjoiY29udG9oOCIsImlhdCI6MTc0ODc4NTU5NiwiZXhwIjoxNzQ4Nzg5MTk2fQ.vdkjorzmtLQukNdtLV6druXQBDshtOe0vsF0DES8Kdk
 
 ### Cek favorite
 GET http://localhost:5000/favorite
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInVzZXJuYW1lIjoiY29udG9oNyIsImlhdCI6MTc0ODcwODA1MiwiZXhwIjoxNzQ4NzExNjUyfQ.EbvM7vqqqbGRegP_sjuelMnLWxSQIuZ6aKS45qNEKqA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsInVzZXJuYW1lIjoiY29udG9oOCIsImlhdCI6MTc0ODc4NTU5NiwiZXhwIjoxNzQ4Nzg5MTk2fQ.vdkjorzmtLQukNdtLV6druXQBDshtOe0vsF0DES8Kdk
 
 ### Tambah movie ke favorite
 POST http://localhost:5000/favorite
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInVzZXJuYW1lIjoiY29udG9oNyIsImlhdCI6MTc0ODcwODA1MiwiZXhwIjoxNzQ4NzExNjUyfQ.EbvM7vqqqbGRegP_sjuelMnLWxSQIuZ6aKS45qNEKqA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsInVzZXJuYW1lIjoiY29udG9oOCIsImlhdCI6MTc0ODc4NTU5NiwiZXhwIjoxNzQ4Nzg5MTk2fQ.vdkjorzmtLQukNdtLV6druXQBDshtOe0vsF0DES8Kdk
 
 {
   "movieId": 16,
@@ -90,7 +90,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInVzZ
 
 ### Update movie dari favorite
 PUT http://localhost:5000/favorite/2
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInVzZXJuYW1lIjoiY29udG9oNyIsImlhdCI6MTc0ODcwODA1MiwiZXhwIjoxNzQ4NzExNjUyfQ.EbvM7vqqqbGRegP_sjuelMnLWxSQIuZ6aKS45qNEKqA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsInVzZXJuYW1lIjoiY29udG9oOCIsImlhdCI6MTc0ODc4NTU5NiwiZXhwIjoxNzQ4Nzg5MTk2fQ.vdkjorzmtLQukNdtLV6druXQBDshtOe0vsF0DES8Kdk
 Content-Type: application/json
 
 {
@@ -99,6 +99,6 @@ Content-Type: application/json
 
 ### Hapus movie dari favorite
 DELETE  http://localhost:5000/favorite/1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInVzZXJuYW1lIjoiY29udG9oNyIsImlhdCI6MTc0ODcwODA1MiwiZXhwIjoxNzQ4NzExNjUyfQ.EbvM7vqqqbGRegP_sjuelMnLWxSQIuZ6aKS45qNEKqA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsInVzZXJuYW1lIjoiY29udG9oOCIsImlhdCI6MTc0ODc4NTU5NiwiZXhwIjoxNzQ4Nzg5MTk2fQ.vdkjorzmtLQukNdtLV6druXQBDshtOe0vsF0DES8Kdk
 Content-Type: application/json
 
