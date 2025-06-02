@@ -25,11 +25,11 @@ exports.login = async (req, res) => {
       { expiresIn: '1d' }
     );
     // Jika butuh refresh token juga:
-    // const refreshToken = jwt.sign(
-    //   { id: user.id, username: user.username },
-    //   process.env.REFRESH_TOKEN_SECRET,
-    //   { expiresIn: '7d' }
-    // );
+    const refreshToken = jwt.sign(
+      { id: user.id, username: user.username },
+      process.env.REFRESH_TOKEN_SECRET,
+      { expiresIn: '7d' }
+    );
     res.json({ token /*, refreshToken */ });
   } catch (err) {
     res.status(400).json({ message: 'Login failed', error: err.message });

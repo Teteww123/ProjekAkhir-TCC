@@ -16,6 +16,7 @@ export const AuthProvider = ({ children }) => {
         { username, password }
       );
       setAccessToken(res.data.accessToken);
+      localStorage.setItem("accessToken", res.data.accessToken);
       return true;
     } catch (err) {
       return false;

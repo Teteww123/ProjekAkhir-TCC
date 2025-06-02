@@ -44,7 +44,7 @@ const RegisterPage = () => {
         alignItems: "center",
         justifyContent: "center",
         backgroundImage:
-          'url("https://storage.googleapis.com/project-storage-konser/images/konser.png")',
+          'url("https://getwallpapers.com/wallpaper/full/1/b/d/829640-gorgerous-movie-backgrounds-1920x1080-ipad-pro.jpg")',
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",

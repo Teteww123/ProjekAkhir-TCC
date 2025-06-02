@@ -7,32 +7,30 @@ import useAuth from "../auth/UseAuth.js";
 function Detail() {
   const { id } = useParams();
   const { accessToken } = useAuth();
-  const [konser, setKonser] = useState(null);
-  const [tiket, setTiket] = useState(null);
+  const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [orderMsg, setOrderMsg] = useState("");
-  const [orderMsgType, setOrderMsgType] = useState("");
+  const [favMsg, setFavMsg] = useState("");
+  const [favMsgType, setFavMsgType] = useState("");
+  const [isFavorite, setIsFavorite] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDetail = async () => {
       try {
-        const konserRes = await axios.get(`${BASE_URL}/konser/${id}`, {
+        const movieRes = await axios.get(`${BASE_URL}/movie/${id}`, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
-        setKonser(konserRes.data.data);
+        setMovie(movieRes.data.data);
 
-        const tiketRes = await axios.get(`${BASE_URL}/tiket`, {
+        // Cek apakah sudah jadi favorite
+        const favRes = await axios.get(`${BASE_URL}/favorite`, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
-        const tiketMatch = (tiketRes.data.data || []).find(
-          (t) => t.nama === konserRes.data.data.nama
-        );
-        setTiket(tiketMatch || null);
+        const favList = favRes.data.data || [];
+        setIsFavorite(favList.some((fav) => fav.movieId === Number(id)));
       } catch (error) {
-        console.error("Error fetching konser/tiket detail:", error);
-        setKonser(null);
-        setTiket(null);
+        console.error("Error fetching movie detail:", error);
+        setMovie(null);
       } finally {
         setLoading(false);
       }
@@ -40,65 +38,45 @@ function Detail() {
     if (accessToken) fetchDetail();
   }, [id, accessToken]);
 
-  const handleOrder = async () => {
-    setOrderMsg("");
-    setOrderMsgType("");
-    if (!accessToken || !konser || !tiket) return;
+  const handleAddFavorite = async () => {
+    setFavMsg("");
+    setFavMsgType("");
     try {
-      const email = localStorage.getItem("email");
-      const res = await axios.get(`${BASE_URL}/users/${email}`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-      const userData = res.data.data;
-      localStorage.setItem("nama", userData.nama);
-      localStorage.setItem("umur", userData.umur);
-
-      if (tiket.quota <= 0) {
-        setOrderMsg("Maaf, tiket sudah habis !");
-        setOrderMsgType("error");
-        return;
-      }
-      if (userData.umur <= 16) {
-        setOrderMsg("Maaf, umur kamu belum cukup !");
-        setOrderMsgType("error");
-        return;
-      }
-
-      await axios.patch(
-        `${BASE_URL}/order/${tiket.id}`,
-        {
-          nama: userData.nama,
-          email: email,
-          umur: userData.umur,
-          tiket: tiket.nama,
-        },
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }
+      await axios.post(
+        `${BASE_URL}/favorite`,
+        { movieId: Number(id), notes: "Film favorit saya" },
+        { headers: { Authorization: `Bearer ${accessToken}` } }
       );
-      setOrderMsg("Order berhasil !");
-      setOrderMsgType("success");
-
-      const konserRes = await axios.get(`${BASE_URL}/konser/${id}`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-      setKonser(konserRes.data.data);
-      const tiketRes = await axios.get(`${BASE_URL}/tiket`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-      const tiketMatch = (tiketRes.data.data || []).find(
-        (t) => t.nama === konserRes.data.data.nama
-      );
-      setTiket(tiketMatch || null);
+      setFavMsg("Berhasil ditambahkan ke favorite!");
+      setFavMsgType("success");
+      setIsFavorite(true);
     } catch (error) {
-      if (error.response?.data?.message === "Anda sudah memesan tiket ini !") {
-        setOrderMsg("Anda sudah membeli tiket konser ini !");
-        setOrderMsgType("error");
-      } else {
-        setOrderMsg("Terjadi kesalahan saat order tiket !");
-        setOrderMsgType("error");
+      setFavMsg("Gagal menambah ke favorite!");
+      setFavMsgType("error");
+    }
+  };
+
+  const handleRemoveFavorite = async () => {
+    setFavMsg("");
+    setFavMsgType("");
+    try {
+      // Cari id favorite
+      const favRes = await axios.get(`${BASE_URL}/favorite`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      const favList = favRes.data.data || [];
+      const fav = favList.find((f) => f.movieId === Number(id));
+      if (fav) {
+        await axios.delete(`${BASE_URL}/favorite/${fav.id}`, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        setFavMsg("Berhasil dihapus dari favorite!");
+        setFavMsgType("success");
+        setIsFavorite(false);
       }
-      console.error("Error order:", error);
+    } catch (error) {
+      setFavMsg("Gagal menghapus favorite!");
+      setFavMsgType("error");
     }
   };
 
@@ -110,10 +88,10 @@ function Detail() {
     );
   }
 
-  if (!konser) {
+  if (!movie) {
     return (
       <section className="section has-text-centered">
-        <p className="is-size-4 has-text-danger">Konser tidak ditemukan.</p>
+        <p className="is-size-4 has-text-danger">Film tidak ditemukan.</p>
       </section>
     );
   }
@@ -141,25 +119,18 @@ function Detail() {
         overflowY: "auto",
       }}
     >
-      <nav
-        className="navbar is-dark-grey"
-        role="navigation"
-        aria-label="main navigation"
-        style={{ width: "100%" }}
-      ></nav>
-
       <section className="section" style={{ width: "100%", maxWidth: "600px" }}>
         <div className="container">
           <div className="card">
             <div className="card-image has-text-centered p-4">
-              {konser.poster ? (
+              {movie.poster_url ? (
                 <figure
                   className="image is-3by4 mx-auto"
                   style={{ maxWidth: "300px" }}
                 >
                   <img
-                    src={konser.poster}
-                    alt={konser.nama}
+                    src={movie.poster_url}
+                    alt={movie.title}
                     style={{ objectFit: "cover", borderRadius: "8px" }}
                   />
                 </figure>
@@ -173,29 +144,28 @@ function Detail() {
               )}
             </div>
             <div className="card-content">
-              <h1 className="title is-4 has-text-centered">{konser.nama}</h1>
+              <h1 className="title is-4 has-text-centered">{movie.title}</h1>
               <div className="content has-text-centered">
                 <p>
-                  <strong>Tanggal:</strong> {konser.tanggal}
+                  <strong>Genre:</strong> {movie.genre}
                 </p>
                 <p>
-                  <strong>Lokasi:</strong> {konser.lokasi}
+                  <strong>Tahun:</strong> {movie.year}
                 </p>
                 <p>
-                  <strong>Bintang Tamu:</strong> {konser.bintangtamu}
-                </p>
-                <p>
-                  <strong>Harga Tiket:</strong>{" "}
-                  {tiket ? `Rp${tiket.harga}` : "-"}
-                </p>
-                <p>
-                  <strong>Quota:</strong> {tiket ? tiket.quota : "-"}
+                  <strong>Deskripsi:</strong> {movie.description}
                 </p>
               </div>
               <div className="buttons mt-4 is-flex is-justify-content-center">
-                <button className="button is-primary" onClick={handleOrder}>
-                  Order
-                </button>
+                {isFavorite ? (
+                  <button className="button is-danger" onClick={handleRemoveFavorite}>
+                    Hapus dari Favorite
+                  </button>
+                ) : (
+                  <button className="button is-warning" onClick={handleAddFavorite}>
+                    Tambah ke Favorite
+                  </button>
+                )}
                 <button
                   className="button is-light"
                   onClick={() => navigate(-1)}
@@ -203,15 +173,15 @@ function Detail() {
                   Kembali
                 </button>
               </div>
-              {orderMsg && (
+              {favMsg && (
                 <div
                   className={`mt-3 has-text-centered ${
-                    orderMsgType === "error"
+                    favMsgType === "error"
                       ? "has-text-danger"
                       : "has-text-success"
                   }`}
                 >
-                  {orderMsg}
+                  {favMsg}
                 </div>
               )}
             </div>

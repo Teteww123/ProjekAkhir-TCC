@@ -4,7 +4,7 @@ import { BASE_URL } from "../utils/Utils.js";
 import useAuth from "../auth/UseAuth.js";
 import { useNavigate } from "react-router-dom";
 
-function Dashboard() {
+function HomePage() {
   const { accessToken } = useAuth();
   const [movies, setMovies] = useState([]);
   const [favorites, setFavorites] = useState([]);
@@ -80,7 +80,10 @@ function Dashboard() {
   return (
     <div className="section" style={{ minHeight: "100vh", background: "#222" }}>
       <div className="container">
-        <h1 className="title has-text-white">Daftar Movie</h1>
+        <h1 className="title has-text-white">Selamat Datang di HomePage</h1>
+        <p className="subtitle has-text-white mb-5">
+          Temukan dan tambahkan film favoritmu!
+        </p>
         {errorMsg && <div className="notification is-danger">{errorMsg}</div>}
         <div className="columns is-multiline">
           {movies.map((movie) => (
@@ -139,4 +142,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default HomePage;

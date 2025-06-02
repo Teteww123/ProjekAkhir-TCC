@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { AuthProvider, useAuthContext } from "./auth/AuthProvider";
-import Dashboard from "./pages/Dashboard.js";
+import Dashboard from "./pages/HomePage.js";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage.js";
 import Detail from "./pages/Details.js";
@@ -27,11 +27,11 @@ function AppRoutes() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route
-        path="/dashboard"
+        path="/home"
         element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />}
       />
       <Route
-        path="/dashboard/:id"
+        path="/home/:id"
         element={isAuthenticated ? <Detail /> : <Navigate to="/login" />}
       />
       <Route

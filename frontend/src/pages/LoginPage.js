@@ -17,9 +17,14 @@ const LoginPage = () => {
       return;
     }
     try {
+      // Jika backend butuh token (misal: untuk refresh login), tambahkan di sini
+      // const token = "Bearer ..."; // isi token jika memang sudah punya
+      // const result = await login(username, password, token);
+
+      // Jika tidak, cukup seperti ini:
       const result = await login(username, password);
       if (result) {
-        navigate("/dashboard", { state: { username } });
+        navigate("/home", { state: { username } });
       } else {
         setError("Username atau Password Salah !");
       }
@@ -41,7 +46,7 @@ const LoginPage = () => {
         alignItems: "center",
         justifyContent: "center",
         backgroundImage:
-          'url("https://storage.googleapis.com/project-storage-konser/images/konser.png")',
+          'url("https://getwallpapers.com/wallpaper/full/1/b/d/829640-gorgerous-movie-backgrounds-1920x1080-ipad-pro.jpg")',
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
