@@ -15,8 +15,8 @@ export const AuthProvider = ({ children }) => {
         `${BASE_URL}/user/login`,
         { username, password }
       );
-      setAccessToken(res.data.accessToken);
-      localStorage.setItem("accessToken", res.data.accessToken);
+      setAccessToken(res.data.token);
+      localStorage.setItem("accessToken", res.data.token);
       return true;
     } catch (err) {
       return false;

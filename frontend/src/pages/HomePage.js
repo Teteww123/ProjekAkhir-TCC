@@ -10,7 +10,14 @@ function HomePage() {
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortYear, setSortYear] = useState("desc"); // "asc" or "desc"
   const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('accessToken');
+    window.location.href = '/login';
+  };
 
   useEffect(() => {
     if (!accessToken) {
@@ -24,7 +31,7 @@ function HomePage() {
       const res = await axios.get(`${BASE_URL}/movie`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
-      setMovies(res.data.data || []);
+      setMovies(res.data || []);
     } catch (error) {
       setErrorMsg("Gagal mengambil data movie");
     }
@@ -36,7 +43,7 @@ function HomePage() {
       const res = await axios.get(`${BASE_URL}/favorite`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
-      setFavorites(res.data.data || []);
+      setFavorites(res.data.data || res.data || []);
     } catch (error) {
       // Optional: handle error
     }
@@ -51,10 +58,11 @@ function HomePage() {
   }, [accessToken]);
 
   const handleAddFavorite = async (movieId) => {
+    const notes = window.prompt("Masukkan catatan untuk favorite ini:", "Film favorit saya") || "Film favorit saya";
     try {
       await axios.post(
         `${BASE_URL}/favorite`,
-        { movieId, notes: "Film favorit saya" },
+        { movieId, notes },
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
       fetchFavorites();
@@ -77,6 +85,20 @@ function HomePage() {
   const isFavorite = (movieId) =>
     favorites.some((fav) => fav.movieId === movieId);
 
+  // FILTERING BERDASARKAN SEARCH TERM
+  const filteredMovies = movies.filter((movie) =>
+    movie.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // SORTING BERDASARKAN TAHUN
+  const sortedMovies = [...filteredMovies].sort((a, b) => {
+    if (sortYear === "asc") {
+      return Number(a.year) - Number(b.year);
+    } else {
+      return Number(b.year) - Number(a.year);
+    }
+  });
+
   if (loading) {
     return (
       <div
@@ -90,30 +112,30 @@ function HomePage() {
   }
 
   return (
-    <div
-      className="section"
-      style={{ minHeight: "100vh", background: "#181818" }}
-    >
+    <div className="section" style={{ minHeight: "100vh", background: "#181818" }}>
       {/* Header */}
-      <nav
-        className="navbar mb-5"
-        style={{
-          background: "rgba(30,30,30,0.95)",
-          borderRadius: "8px",
-        }}
-      >
+      <nav className="navbar mb-5" style={{ background: "rgba(30,30,30,0.95)", borderRadius: "8px" }}>
         <div className="navbar-brand">
           <span className="navbar-item">
             <span className="icon is-large mr-2">
-              <i
-                className="fas fa-film fa-2x"
-                style={{ color: "#ffdd57" }}
-              ></i>
+              <i className="fas fa-film fa-2x" style={{ color: "#ffdd57" }}></i>
             </span>
             <span className="title is-4 has-text-white">MovieApp</span>
           </span>
         </div>
         <div className="navbar-end">
+          <div className="navbar-item">
+            <button className="button is-warning" onClick={() => navigate("/favorite")}>
+              <span className="icon"><i className="fas fa-star"></i></span>
+              <span>Favorite</span>
+            </button>
+          </div>
+          <div className="navbar-item">
+            <button className="button is-danger" onClick={handleLogout}>
+              <span className="icon"><i className="fas fa-sign-out-alt"></i></span>
+              <span>Logout</span>
+            </button>
+          </div>
           <div className="navbar-item">
             <span className="icon is-medium">
               <i className="fas fa-user-circle fa-lg" style={{ color: "#fff" }}></i>
@@ -127,16 +149,46 @@ function HomePage() {
         <p className="subtitle has-text-white mb-5">
           Temukan dan tambahkan film favoritmu!
         </p>
+
+        {/* INPUT SEARCH */}
+        <div className="field mb-3" style={{ maxWidth: 400 }}>
+          <div className="control has-icons-left">
+            <input
+              className="input"
+              type="text"
+              placeholder="Cari judul film..."
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+            />
+            <span className="icon is-left">
+              <i className="fas fa-search"></i>
+            </span>
+          </div>
+        </div>
+
+        {/* SORTING BY YEAR */}
+        <div className="field mb-5" style={{ maxWidth: 300 }}>
+          <label className="label has-text-white">Urutkan berdasarkan tahun</label>
+          <div className="control">
+            <div className="select">
+              <select
+                value={sortYear}
+                onChange={e => setSortYear(e.target.value)}
+              >
+                <option value="desc">Terbaru ke Terlama</option>
+                <option value="asc">Terlama ke Terbaru</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
         {errorMsg && <div className="notification is-danger">{errorMsg}</div>}
         <div className="columns is-multiline">
-          {movies.map((movie) => (
+          {sortedMovies.map((movie) => (
             <div className="column is-one-quarter" key={movie.id}>
               <div className="card" style={{ minHeight: "100%" }}>
                 <div className="card-image">
-                  <figure
-                    className="image is-4by3"
-                    style={{ background: "#222" }}
-                  >
+                  <figure className="image is-4by3" style={{ background: "#222" }}>
                     <img
                       src={movie.poster_url}
                       alt={movie.title}
@@ -208,10 +260,10 @@ function HomePage() {
               </div>
             </div>
           ))}
-          {movies.length === 0 && (
+          {sortedMovies.length === 0 && (
             <div className="column">
               <div className="notification is-warning has-text-centered">
-                Tidak ada film tersedia.
+                Tidak ada film ditemukan.
               </div>
             </div>
           )}
