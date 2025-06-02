@@ -5,7 +5,7 @@ const cors = require("cors");
 
 // Izinkan semua origin (atau bisa dibatasi sesuai kebutuhan)
 app.use(cors({
-  origin: "http://localhost:3000",
+  origin: "https://projectakhir-frontend-85236031321.us-central1.run.app",
   credentials: true
 }));
 
