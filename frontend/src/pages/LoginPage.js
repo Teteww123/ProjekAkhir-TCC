@@ -19,11 +19,7 @@ const LoginPage = () => {
     try {
       const result = await login(username, pass);
       if (result) {
-        if (username === "admin") {
-          navigate("/admin-dashboard");
-        } else {
-          navigate("/dashboard", { state: { username } });
-        }
+        navigate("/dashboard", { state: { username } });
       } else {
         setError("Username atau Password Salah !");
       }
