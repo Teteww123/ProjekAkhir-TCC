@@ -12,7 +12,12 @@ function HomePage() {
   const [errorMsg, setErrorMsg] = useState("");
   const navigate = useNavigate();
 
-  // Fetch all movies
+  useEffect(() => {
+    if (!accessToken) {
+      navigate("/login");
+    }
+  }, [accessToken, navigate]);
+
   const fetchMovies = async () => {
     setLoading(true);
     try {
@@ -26,7 +31,6 @@ function HomePage() {
     setLoading(false);
   };
 
-  // Fetch favorites
   const fetchFavorites = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/favorite`, {
@@ -74,11 +78,50 @@ function HomePage() {
     favorites.some((fav) => fav.movieId === movieId);
 
   if (loading) {
-    return <div className="has-text-centered">Loading...</div>;
+    return (
+      <div
+        className="has-text-centered"
+        style={{ color: "#fff", marginTop: "3rem" }}
+      >
+        <span className="loader"></span>
+        <p>Loading...</p>
+      </div>
+    );
   }
 
   return (
-    <div className="section" style={{ minHeight: "100vh", background: "#222" }}>
+    <div
+      className="section"
+      style={{ minHeight: "100vh", background: "#181818" }}
+    >
+      {/* Header */}
+      <nav
+        className="navbar mb-5"
+        style={{
+          background: "rgba(30,30,30,0.95)",
+          borderRadius: "8px",
+        }}
+      >
+        <div className="navbar-brand">
+          <span className="navbar-item">
+            <span className="icon is-large mr-2">
+              <i
+                className="fas fa-film fa-2x"
+                style={{ color: "#ffdd57" }}
+              ></i>
+            </span>
+            <span className="title is-4 has-text-white">MovieApp</span>
+          </span>
+        </div>
+        <div className="navbar-end">
+          <div className="navbar-item">
+            <span className="icon is-medium">
+              <i className="fas fa-user-circle fa-lg" style={{ color: "#fff" }}></i>
+            </span>
+          </div>
+        </div>
+      </nav>
+
       <div className="container">
         <h1 className="title has-text-white">Selamat Datang di HomePage</h1>
         <p className="subtitle has-text-white mb-5">
@@ -88,28 +131,51 @@ function HomePage() {
         <div className="columns is-multiline">
           {movies.map((movie) => (
             <div className="column is-one-quarter" key={movie.id}>
-              <div className="card">
+              <div className="card" style={{ minHeight: "100%" }}>
                 <div className="card-image">
-                  <figure className="image is-4by3">
+                  <figure
+                    className="image is-4by3"
+                    style={{ background: "#222" }}
+                  >
                     <img
                       src={movie.poster_url}
                       alt={movie.title}
-                      style={{ objectFit: "cover" }}
+                      style={{
+                        objectFit: "cover",
+                        borderRadius: "8px",
+                      }}
                     />
                   </figure>
+                  {isFavorite(movie.id) && (
+                    <span
+                      className="tag is-warning"
+                      style={{
+                        position: "absolute",
+                        top: "10px",
+                        right: "10px",
+                        fontWeight: "bold",
+                        fontSize: "0.9rem",
+                      }}
+                    >
+                      <i className="fas fa-star"></i> Favorite
+                    </span>
+                  )}
                 </div>
                 <div className="card-content">
                   <p className="title is-5">{movie.title}</p>
                   <p className="subtitle is-6">
                     {movie.genre} | {movie.year}
                   </p>
-                  <p>{movie.description}</p>
+                  <p style={{ minHeight: "60px" }}>{movie.description}</p>
                   <div className="buttons mt-2">
                     <button
                       className="button is-link"
-                      onClick={() => navigate(`/movie/${movie.id}`)}
+                      onClick={() => navigate(`/home/${movie.id}`)}
                     >
-                      Detail
+                      <span className="icon">
+                        <i className="fas fa-info-circle"></i>
+                      </span>
+                      <span>Detail</span>
                     </button>
                     {isFavorite(movie.id) ? (
                       <button
@@ -121,14 +187,20 @@ function HomePage() {
                           handleRemoveFavorite(fav.id);
                         }}
                       >
-                        Hapus Favorite
+                        <span className="icon">
+                          <i className="fas fa-heart-broken"></i>
+                        </span>
+                        <span>Hapus Favorite</span>
                       </button>
                     ) : (
                       <button
                         className="button is-warning"
                         onClick={() => handleAddFavorite(movie.id)}
                       >
-                        Tambah Favorite
+                        <span className="icon">
+                          <i className="fas fa-star"></i>
+                        </span>
+                        <span>Tambah Favorite</span>
                       </button>
                     )}
                   </div>
@@ -136,6 +208,13 @@ function HomePage() {
               </div>
             </div>
           ))}
+          {movies.length === 0 && (
+            <div className="column">
+              <div className="notification is-warning has-text-centered">
+                Tidak ada film tersedia.
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
