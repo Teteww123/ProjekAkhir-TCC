@@ -30,7 +30,7 @@ exports.login = async (req, res) => {
       process.env.REFRESH_TOKEN_SECRET,
       { expiresIn: '7d' }
     );
-    res.json({ accessToken: token /*, refreshToken */ });
+    res.json({ accessToken: token, refreshToken});
   } catch (err) {
     res.status(400).json({ message: 'Login failed', error: err.message });
   }
