@@ -1,0 +1,14 @@
+runtime: nodejs20
+
+env_variables:
+  # Ganti URL backend sesuai endpoint Cloud Run Anda
+  REACT_APP_BASE_URL: "https://projectakhir-backend-85236031321.us-central1.run.app"
+
+handlers:
+  - url: /
+    static_files: build/index.html
+    upload: build/index.html
+
+  - url: /(.*)
+    static_files: build/\1
+    upload: build/(.*)
