@@ -31,8 +31,9 @@ app.use('/favorite', favoriteRoutes);
 sequelize.sync({ alter: true })
   .then(() => {
     console.log('Database & tables created!');
-    app.listen(process.env.PORT || 8080, () => {
-      console.log('Server is running...');
+    const PORT = process.env.PORT || 8080;
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
     });
   })
   .catch(err => {
