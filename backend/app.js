@@ -3,6 +3,12 @@ const app = express();
 const sequelize = require('./config/database');
 const cors = require("cors");
 
+// Izinkan semua origin (atau bisa dibatasi sesuai kebutuhan)
+app.use(cors({
+  origin: "http://localhost:3000",
+  credentials: true
+}));
+
 // Pastikan semua model di-load di sini!
 require('./models/user');
 require('./models/movie');
@@ -21,12 +27,6 @@ app.get('/', (req, res) => {
 app.use('/user', userRoutes);
 app.use('/movie', movieRoutes);
 app.use('/favorite', favoriteRoutes);
-
-// Izinkan semua origin (atau bisa dibatasi sesuai kebutuhan)
-app.use(cors({
-  origin: "http://localhost:3000",
-  credentials: true
-}));
 
 sequelize.sync({ alter: true })
   .then(() => {

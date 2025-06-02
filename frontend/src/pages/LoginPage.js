@@ -6,7 +6,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [username, setUsername] = useState("");
-  const [pass, setPass] = useState("");
+  const [password, setPass] = useState("");
   const [error, setError] = useState("");
 
   const handleLogin = async (e) => {
@@ -17,7 +17,7 @@ const LoginPage = () => {
       return;
     }
     try {
-      const result = await login(username, pass);
+      const result = await login(username, password);
       if (result) {
         navigate("/dashboard", { state: { username } });
       } else {
@@ -66,17 +66,23 @@ const LoginPage = () => {
         <form onSubmit={handleLogin}>
           <input
             className="input mb-3"
+            id="username"
+            name="username"
             type="text"
             placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            autoComplete="username"
           />
           <input
             className="input mb-4"
+            id="password"
+            name="password"
             type="password"
             placeholder="Password"
-            value={pass}
+            value={password}
             onChange={(e) => setPass(e.target.value)}
+            autoComplete="current-password"
           />
           <button
             className="button is-primary is-fullwidth mb-3"

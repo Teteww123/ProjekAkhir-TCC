@@ -9,25 +9,15 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [accessToken, setAccessToken] = useState(null);
 
-  const login = async (email, pass) => {
+  const login = async (username, password) => {
     try {
       const res = await axios.post(
-        `${BASE_URL}/login`,
-        { email, pass },
-        {
-          withCredentials: true,
-        }
+        `${BASE_URL}/user/login`,
+        { username, password }
       );
       setAccessToken(res.data.accessToken);
-      Cookies.set("refreshToken", res.data.refreshToken, {
-        secure: true,
-        domain:
-          "https://frontend-konser-dot-xenon-axe-450704-n3.uc.r.appspot.com",
-        expires: 5,
-      });
       return true;
     } catch (err) {
-      console.error("Login failed:", err);
       return false;
     }
   };
