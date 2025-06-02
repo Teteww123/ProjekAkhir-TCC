@@ -12,6 +12,22 @@ function HomePage() {
   const [errorMsg, setErrorMsg] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [sortYear, setSortYear] = useState("desc"); // "asc" or "desc"
+  const [showCreate, setShowCreate] = useState(false);
+  const [newMovie, setNewMovie] = useState({
+    title: "",
+    description: "",
+    genre: "",
+    poster_url: "",
+    year: "",
+  });
+  const [editMovieId, setEditMovieId] = useState(null);
+  const [editMovie, setEditMovie] = useState({
+    title: "",
+    description: "",
+    genre: "",
+    poster_url: "",
+    year: "",
+  });
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -99,6 +115,74 @@ function HomePage() {
     }
   });
 
+  // CREATE MOVIE HANDLER
+  const handleCreateMovie = async (e) => {
+    e.preventDefault();
+    setErrorMsg("");
+    if (!newMovie.title || !newMovie.genre || !newMovie.year) {
+      setErrorMsg("Judul, genre, dan tahun wajib diisi!");
+      return;
+    }
+    try {
+      await axios.post(
+        `${BASE_URL}/movie`,
+        newMovie,
+        { headers: { Authorization: `Bearer ${accessToken}` } }
+      );
+      setShowCreate(false);
+      setNewMovie({
+        title: "",
+        description: "",
+        genre: "",
+        poster_url: "",
+        year: "",
+      });
+      fetchMovies();
+    } catch (error) {
+      setErrorMsg("Gagal menambah film baru");
+    }
+  };
+
+  // EDIT MOVIE HANDLER
+  const openEditModal = (movie) => {
+    setEditMovieId(movie.id);
+    setEditMovie({
+      title: movie.title,
+      description: movie.description,
+      genre: movie.genre,
+      poster_url: movie.poster_url,
+      year: movie.year,
+    });
+    setShowCreate(false);
+  };
+
+  const handleEditMovie = async (e) => {
+    e.preventDefault();
+    setErrorMsg("");
+    if (!editMovie.title || !editMovie.genre || !editMovie.year) {
+      setErrorMsg("Judul, genre, dan tahun wajib diisi!");
+      return;
+    }
+    try {
+      await axios.put(
+        `${BASE_URL}/movie/${editMovieId}`,
+        { ...editMovie, year: Number(editMovie.year) },
+        { headers: { Authorization: `Bearer ${accessToken}` } }
+      );
+      setEditMovieId(null);
+      setEditMovie({
+        title: "",
+        description: "",
+        genre: "",
+        poster_url: "",
+        year: "",
+      });
+      fetchMovies();
+    } catch (error) {
+      setErrorMsg("Gagal mengedit data film");
+    }
+  };
+
   if (loading) {
     return (
       <div
@@ -125,6 +209,12 @@ function HomePage() {
         </div>
         <div className="navbar-end">
           <div className="navbar-item">
+            <button className="button is-success" onClick={() => setShowCreate(true)}>
+              <span className="icon"><i className="fas fa-plus"></i></span>
+              <span>Tambah Film</span>
+            </button>
+          </div>
+          <div className="navbar-item">
             <button className="button is-warning" onClick={() => navigate("/favorite")}>
               <span className="icon"><i className="fas fa-star"></i></span>
               <span>Favorite</span>
@@ -143,6 +233,160 @@ function HomePage() {
           </div>
         </div>
       </nav>
+
+      {/* Modal Create Movie */}
+      {showCreate && (
+        <div className="modal is-active">
+          <div className="modal-background" onClick={() => setShowCreate(false)}></div>
+          <div className="modal-card">
+            <header className="modal-card-head">
+              <p className="modal-card-title">Tambah Film Baru</p>
+              <button className="delete" aria-label="close" onClick={() => setShowCreate(false)}></button>
+            </header>
+            <section className="modal-card-body">
+              <form onSubmit={handleCreateMovie}>
+                <div className="field">
+                  <label className="label">Judul</label>
+                  <div className="control">
+                    <input
+                      className="input"
+                      type="text"
+                      value={newMovie.title}
+                      onChange={e => setNewMovie({ ...newMovie, title: e.target.value })}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="field">
+                  <label className="label">Deskripsi</label>
+                  <div className="control">
+                    <textarea
+                      className="textarea"
+                      value={newMovie.description}
+                      onChange={e => setNewMovie({ ...newMovie, description: e.target.value })}
+                    />
+                  </div>
+                </div>
+                <div className="field">
+                  <label className="label">Genre</label>
+                  <div className="control">
+                    <input
+                      className="input"
+                      type="text"
+                      value={newMovie.genre}
+                      onChange={e => setNewMovie({ ...newMovie, genre: e.target.value })}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="field">
+                  <label className="label">Tahun</label>
+                  <div className="control">
+                    <input
+                      className="input"
+                      type="number"
+                      value={newMovie.year}
+                      onChange={e => setNewMovie({ ...newMovie, year: e.target.value })}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="field">
+                  <label className="label">Poster URL</label>
+                  <div className="control">
+                    <input
+                      className="input"
+                      type="text"
+                      value={newMovie.poster_url}
+                      onChange={e => setNewMovie({ ...newMovie, poster_url: e.target.value })}
+                    />
+                  </div>
+                </div>
+                <button className="button is-success mt-3" type="submit">
+                  Simpan
+                </button>
+              </form>
+            </section>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Edit Movie */}
+      {editMovieId && (
+        <div className="modal is-active">
+          <div className="modal-background" onClick={() => setEditMovieId(null)}></div>
+          <div className="modal-card">
+            <header className="modal-card-head">
+              <p className="modal-card-title">Edit Film</p>
+              <button className="delete" aria-label="close" onClick={() => setEditMovieId(null)}></button>
+            </header>
+            <section className="modal-card-body">
+              <form onSubmit={handleEditMovie}>
+                <div className="field">
+                  <label className="label">Judul</label>
+                  <div className="control">
+                    <input
+                      className="input"
+                      type="text"
+                      value={editMovie.title}
+                      onChange={e => setEditMovie({ ...editMovie, title: e.target.value })}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="field">
+                  <label className="label">Deskripsi</label>
+                  <div className="control">
+                    <textarea
+                      className="textarea"
+                      value={editMovie.description}
+                      onChange={e => setEditMovie({ ...editMovie, description: e.target.value })}
+                    />
+                  </div>
+                </div>
+                <div className="field">
+                  <label className="label">Genre</label>
+                  <div className="control">
+                    <input
+                      className="input"
+                      type="text"
+                      value={editMovie.genre}
+                      onChange={e => setEditMovie({ ...editMovie, genre: e.target.value })}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="field">
+                  <label className="label">Tahun</label>
+                  <div className="control">
+                    <input
+                      className="input"
+                      type="number"
+                      value={editMovie.year}
+                      onChange={e => setEditMovie({ ...editMovie, year: e.target.value })}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="field">
+                  <label className="label">Poster URL</label>
+                  <div className="control">
+                    <input
+                      className="input"
+                      type="text"
+                      value={editMovie.poster_url}
+                      onChange={e => setEditMovie({ ...editMovie, poster_url: e.target.value })}
+                    />
+                  </div>
+                </div>
+                <button className="button is-success mt-3" type="submit">
+                  Simpan Perubahan
+                </button>
+              </form>
+            </section>
+          </div>
+        </div>
+      )}
 
       <div className="container">
         <h1 className="title has-text-white">Selamat Datang di HomePage</h1>
@@ -229,9 +473,17 @@ function HomePage() {
                       </span>
                       <span>Detail</span>
                     </button>
+                    <button
+                      className="button is-info"
+                      title="Edit"
+                      onClick={() => openEditModal(movie)}
+                    >
+                      Edit
+                    </button>
                     {isFavorite(movie.id) ? (
                       <button
                         className="button is-danger"
+                        title="Hapus Favorite"
                         onClick={() => {
                           const fav = favorites.find(
                             (f) => f.movieId === movie.id
@@ -239,20 +491,15 @@ function HomePage() {
                           handleRemoveFavorite(fav.id);
                         }}
                       >
-                        <span className="icon">
-                          <i className="fas fa-heart-broken"></i>
-                        </span>
-                        <span>Hapus Favorite</span>
+                        Hapus Favorite
                       </button>
                     ) : (
                       <button
                         className="button is-warning"
+                        title="Tambah Favorite"
                         onClick={() => handleAddFavorite(movie.id)}
                       >
-                        <span className="icon">
-                          <i className="fas fa-star"></i>
-                        </span>
-                        <span>Tambah Favorite</span>
+                        Tambah Favorite
                       </button>
                     )}
                   </div>

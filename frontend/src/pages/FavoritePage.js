@@ -108,6 +108,17 @@ const FavoritePage = () => {
               return (
                 <div className="column is-one-third" key={fav.id}>
                   <div className="card" style={{ background: "#17181c", color: "#fff", boxShadow: "0 4px 16px #1113" }}>
+                    {movie && movie.poster_url && (
+                      <div className="card-image" style={{ padding: "1rem" }}>
+                        <figure className="image is-4by3" style={{ background: "#222", borderRadius: "8px" }}>
+                          <img
+                            src={movie.poster_url}
+                            alt={movie.title}
+                            style={{ objectFit: "cover", borderRadius: "8px", maxHeight: "200px", width: "auto", margin: "0 auto" }}
+                          />
+                        </figure>
+                      </div>
+                    )}
                     <div className="card-content">
                       <p className="title is-5" style={{ color: "#fff" }}>
                         {movie ? movie.title : `Movie ID: ${fav.movieId}`}

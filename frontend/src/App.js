@@ -28,7 +28,7 @@ function AppRoutes() {
       <Route path="/register" element={<RegisterPage />} />
       <Route
         path="/home"
-        element={isAuthenticated ? <HomePage /> : <Navigate to="/login" />}
+        element={isAuthenticated ? <HomePage /> : <Navigate to="/home" />}
       />
       <Route
         path="/home/:id"

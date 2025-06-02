@@ -7,7 +7,7 @@ Content-Type: application/json
 
 {
   "username": "contoh8",
-  "password": "rahasiaa"
+  "password": "rahasia"
 }
 
 ### Get semua user (GET request, jika ada endpoint)
@@ -19,7 +19,7 @@ Content-Type: application/json
 
 {
   "username": "contoh8",
-  "password": "rahasiaa"
+  "password": "rahasia"
 }
 
 ### Update user (PUT)
@@ -45,12 +45,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsInVzZ
 ### Tambah movie baru
 POST http://localhost:5000/movie
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsInVzZXJuYW1lIjoiY29udG9oOCIsImlhdCI6MTc0ODg2NTk0OSwiZXhwIjoxNzQ4ODY5NTQ5fQ.r_qCfF21eXmwoeOWWJRV6R64ovAHICh-MNRrGfRXbTw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiY29udG9oOCIsImlhdCI6MTc0ODg4MDkxOSwiZXhwIjoxNzQ4ODg0NTE5fQ.HlVkfHQyhWTm7Ors7OMGf0jbYKYjhaniSXQ-XJzNpJY
 
 {
   "title": "NARUTO",
   "description": "Film tentang bokep jepang",
-  "poster_url": "https://cdns.klimg.com/resized/646x323/p/headline/0000359489.jpg",
+  "poster_url": "https://tse1.mm.bing.net/th?id=OIP.Dozhp57dp9FqE18Cm1FSZwHaEJ&pid=Api&P=0&h=220",
   "genre": "HORROR",
   "year": 1990
 }
